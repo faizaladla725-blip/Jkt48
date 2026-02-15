@@ -1,0 +1,896 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JKT48 Theater Live - Experience the Magic</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Inter:wght@300;400;600;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        'orbitron': ['Orbitron', 'sans-serif'],
+                        'inter': ['Inter', 'sans-serif'],
+                    },
+                    colors: {
+                        'jkt-pink': '#FF006E',
+                        'jkt-purple': '#8338EC',
+                        'jkt-cyan': '#00F5FF',
+                        'jkt-dark': '#0a0a0f',
+                        'jkt-card': '#151520',
+                    },
+                    animation: {
+                        'pulse-slow': 'pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+                        'float': 'float 6s ease-in-out infinite',
+                        'glow': 'glow 2s ease-in-out infinite alternate',
+                        'slide-up': 'slideUp 0.5s ease-out',
+                    },
+                    keyframes: {
+                        float: {
+                            '0%, 100%': { transform: 'translateY(0)' },
+                            '50%': { transform: 'translateY(-20px)' },
+                        },
+                        glow: {
+                            'from': { boxShadow: '0 0 10px #FF006E, 0 0 20px #FF006E' },
+                            'to': { boxShadow: '0 0 20px #8338EC, 0 0 30px #8338EC' },
+                        },
+                        slideUp: {
+                            'from': { transform: 'translateY(20px)', opacity: '0' },
+                            'to': { transform: 'translateY(0)', opacity: '1' },
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body {
+            background-color: #0a0a0f;
+            color: white;
+            overflow-x: hidden;
+        }
+        
+        .glass-effect {
+            background: rgba(21, 21, 32, 0.7);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .gradient-text {
+            background: linear-gradient(135deg, #FF006E 0%, #8338EC 50%, #00F5FF 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .member-card {
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        
+        .member-card:hover {
+            transform: translateY(-10px) scale(1.02);
+            box-shadow: 0 20px 40px rgba(255, 0, 110, 0.3);
+        }
+        
+        .live-indicator {
+            animation: pulse-ring 2s cubic-bezier(0.215, 0.61, 0.355, 1) infinite;
+        }
+        
+        @keyframes pulse-ring {
+            0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(255, 0, 0, 0.7); }
+            70% { transform: scale(1); box-shadow: 0 0 0 10px rgba(255, 0, 0, 0); }
+            100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(255, 0, 0, 0); }
+        }
+        
+        .particle {
+            position: absolute;
+            background: linear-gradient(to bottom, #FF006E, #8338EC);
+            border-radius: 50%;
+            opacity: 0.5;
+            animation: fall linear infinite;
+        }
+        
+        @keyframes fall {
+            to { transform: translateY(100vh) rotate(360deg); }
+        }
+        
+        .nav-link {
+            position: relative;
+        }
+        
+        .nav-link::after {
+            content: '';
+            position: absolute;
+            width: 0;
+            height: 2px;
+            bottom: -4px;
+            left: 0;
+            background: linear-gradient(90deg, #FF006E, #00F5FF);
+            transition: width 0.3s;
+        }
+        
+        .nav-link:hover::after {
+            width: 100%;
+        }
+        
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 8px;
+        }
+        
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: #0a0a0f;
+        }
+        
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: linear-gradient(180deg, #FF006E, #8338EC);
+            border-radius: 4px;
+        }
+        
+        .theater-stage {
+            background: radial-gradient(circle at center, rgba(131, 56, 236, 0.2) 0%, transparent 70%);
+        }
+    </style>
+</head>
+<body class="font-inter custom-scrollbar">
+
+    <!-- Particle Background -->
+    <div id="particles" class="fixed inset-0 pointer-events-none z-0"></div>
+
+    <!-- Navigation -->
+    <nav class="fixed w-full z-50 glass-effect border-b border-white/10">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-20">
+                <div class="flex items-center space-x-3 cursor-pointer" onclick="showPage('home')">
+                    <div class="w-10 h-10 bg-gradient-to-br from-jkt-pink to-jkt-purple rounded-lg flex items-center justify-center transform rotate-3 hover:rotate-6 transition-transform">
+                        <span class="font-orbitron font-bold text-xl text-white">JKT</span>
+                    </div>
+                    <span class="font-orbitron font-bold text-2xl tracking-wider text-white">
+                        THEATER<span class="text-jkt-pink">48</span>
+                    </span>
+                </div>
+                
+                <div class="hidden md:flex items-center space-x-8">
+                    <button onclick="showPage('home')" class="nav-link text-gray-300 hover:text-white transition-colors font-medium">Beranda</button>
+                    <button onclick="showPage('members')" class="nav-link text-gray-300 hover:text-white transition-colors font-medium">Member</button>
+                    <button onclick="showPage('schedule')" class="nav-link text-gray-300 hover:text-white transition-colors font-medium">Jadwal</button>
+                    <button onclick="showPage('shop')" class="nav-link text-gray-300 hover:text-white transition-colors font-medium">Merchandise</button>
+                </div>
+
+                <div class="flex items-center space-x-4" id="authSection">
+                    <button onclick="openLoginModal()" class="px-6 py-2 rounded-full border border-jkt-pink text-jkt-pink hover:bg-jkt-pink hover:text-white transition-all duration-300 font-medium transform hover:scale-105">
+                        Masuk
+                    </button>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content Container -->
+    <main class="relative z-10 pt-20 min-h-screen">
+        
+        <!-- HOME PAGE -->
+        <div id="homePage" class="page-section">
+            <!-- Hero Section -->
+            <section class="relative min-h-screen flex items-center justify-center overflow-hidden">
+                <div class="absolute inset-0 theater-stage"></div>
+                
+                <div class="relative z-10 text-center px-4 max-w-6xl mx-auto">
+                    <div class="mb-8 inline-block">
+                        <span class="live-indicator inline-flex items-center px-4 py-2 rounded-full bg-red-500/20 border border-red-500/50 text-red-400 font-bold text-sm tracking-wider animate-pulse">
+                            <span class="w-2 h-2 bg-red-500 rounded-full mr-2 animate-pulse"></span>
+                            LIVE NOW
+                        </span>
+                    </div>
+                    
+                    <h1 class="font-orbitron font-black text-5xl md:text-8xl mb-6 leading-tight">
+                        <span class="block text-transparent bg-clip-text bg-gradient-to-r from-jkt-pink via-jkt-purple to-jkt-cyan animate-pulse-slow">
+                            THEATER LIVE
+                        </span>
+                        <span class="block text-white mt-2">JKT48</span>
+                    </h1>
+                    
+                    <p class="text-xl md:text-2xl text-gray-400 mb-12 max-w-2xl mx-auto font-light">
+                        Rasakan pengalaman langsung yang tak terlupakan bersama member JKT48. 
+                        Setiap pertunjukan adalah cerita baru.
+                    </p>
+                    
+                    <div class="flex flex-col sm:flex-row gap-4 justify-center items-center">
+                        <button onclick="enterTheater()" class="group relative px-8 py-4 bg-gradient-to-r from-jkt-pink to-jkt-purple rounded-full font-bold text-lg overflow-hidden transition-all hover:scale-105 hover:shadow-[0_0_30px_rgba(255,0,110,0.5)]">
+                            <span class="relative z-10 flex items-center gap-2">
+                                <i class="fas fa-play"></i>
+                                Masuk Theater
+                            </span>
+                            <div class="absolute inset-0 bg-gradient-to-r from-jkt-purple to-jkt-pink opacity-0 group-hover:opacity-100 transition-opacity"></div>
+                        </button>
+                        
+                        <button onclick="showPage('members')" class="px-8 py-4 rounded-full border-2 border-white/20 hover:border-jkt-cyan hover:text-jkt-cyan transition-all font-semibold text-lg backdrop-blur-sm">
+                            Lihat Member
+                        </button>
+                    </div>
+
+                    <!-- Live Stats -->
+                    <div class="mt-16 grid grid-cols-2 md:grid-cols-4 gap-8 max-w-3xl mx-auto">
+                        <div class="glass-effect rounded-2xl p-6 transform hover:scale-105 transition-transform">
+                            <div class="text-3xl font-bold text-jkt-pink font-orbitron" id="viewerCount">12,847</div>
+                            <div class="text-sm text-gray-400 mt-1">Penonton Online</div>
+                        </div>
+                        <div class="glass-effect rounded-2xl p-6 transform hover:scale-105 transition-transform">
+                            <div class="text-3xl font-bold text-jkt-cyan font-orbitron">3</div>
+                            <div class="text-sm text-gray-400 mt-1">Show Hari Ini</div>
+                        </div>
+                        <div class="glass-effect rounded-2xl p-6 transform hover:scale-105 transition-transform">
+                            <div class="text-3xl font-bold text-jkt-purple font-orbitron">48</div>
+                            <div class="text-sm text-gray-400 mt-1">Member Aktif</div>
+                        </div>
+                        <div class="glass-effect rounded-2xl p-6 transform hover:scale-105 transition-transform">
+                            <div class="text-3xl font-bold text-white font-orbitron">24/7</div>
+                            <div class="text-sm text-gray-400 mt-1">Konten Eksklusif</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Floating Elements -->
+                <div class="absolute top-1/4 left-10 w-20 h-20 bg-jkt-pink/20 rounded-full blur-xl animate-float"></div>
+                <div class="absolute bottom-1/4 right-10 w-32 h-32 bg-jkt-purple/20 rounded-full blur-xl animate-float" style="animation-delay: 2s;"></div>
+            </section>
+
+            <!-- Now Showing Section -->
+            <section class="py-20 px-4">
+                <div class="max-w-7xl mx-auto">
+                    <h2 class="font-orbitron text-4xl font-bold mb-12 text-center">
+                        <span class="gradient-text">Sedang Tayang</span>
+                    </h2>
+                    
+                    <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+                        <!-- Show Card 1 -->
+                        <div class="group relative glass-effect rounded-3xl overflow-hidden cursor-pointer transform transition-all duration-500 hover:scale-105">
+                            <div class="absolute inset-0 bg-gradient-to-t from-black via-transparent to-transparent z-10"></div>
+                            <img src="https://images.unsplash.com/photo-1514525253440-b393452e8d26?w=800&h=600&fit=crop" alt="Theater Show" class="w-full h-64 object-cover transform group-hover:scale-110 transition-transform duration-700">
+                            <div class="absolute top-4 right-4 z-20">
+                                <span class="bg-red-600 text-white px-3 py-1 rounded-full text-xs font-bold animate-pulse">LIVE</span>
+                            </div>
+                            <div class="absolute bottom-0 left-0 right-0 p-6 z-20">
+                                <h3 class="text-2xl font-bold mb-2 text-white">Pajama Drive</h3>
+                                <p class="text-gray-300 text-sm mb-4">Team J - 19:00 WIB</p>
+                                <button onclick="watchShow('pajama')" class="w-full py-3 bg-jkt-pink hover:bg-jkt-pink/80 rounded-xl font-semibold transition-colors flex items-center justify-center gap-2">
+                                    <i class="fas fa-play-circle"></i> Tonton Sekarang
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Show Card 2 -->
+                        <div class="group relative glass-effect rounded-3xl overflow-hidden cursor-pointer transform transition-all duration-500 hover:scale-105">
+                            <div class="absolute inset-0 bg-gradient-to-t from-black via-transparent to-transparent z-10"></div>
+                            <img src="https://images.unsplash.com/photo-1493225255756-d9584f8606e9?w=800&h=600&fit=crop" alt="Theater Show" class="w-full h-64 object-cover transform group-hover:scale-110 transition-transform duration-700">
+                            <div class="absolute top-4 right-4 z-20">
+                                <span class="bg-jkt-purple text-white px-3 py-1 rounded-full text-xs font-bold">SEGERA</span>
+                            </div>
+                            <div class="absolute bottom-0 left-0 right-0 p-6 z-20">
+                                <h3 class="text-2xl font-bold mb-2 text-white">Cara Meminum Ramune</h3>
+                                <p class="text-gray-300 text-sm mb-4">Team KIII - 20:30 WIB</p>
+                                <button class="w-full py-3 bg-white/10 hover:bg-white/20 rounded-xl font-semibold transition-colors border border-white/20">
+                                    Set Pengingat
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Show Card 3 -->
+                        <div class="group relative glass-effect rounded-3xl overflow-hidden cursor-pointer transform transition-all duration-500 hover:scale-105">
+                            <div class="absolute inset-0 bg-gradient-to-t from-black via-transparent to-transparent z-10"></div>
+                            <img src="https://images.unsplash.com/photo-1501386761578-eac5c94b800a?w=800&h=600&fit=crop" alt="Theater Show" class="w-full h-64 object-cover transform group-hover:scale-110 transition-transform duration-700">
+                            <div class="absolute top-4 right-4 z-20">
+                                <span class="bg-jkt-cyan text-black px-3 py-1 rounded-full text-xs font-bold">REPLAY</span>
+                            </div>
+                            <div class="absolute bottom-0 left-0 right-0 p-6 z-20">
+                                <h3 class="text-2xl font-bold mb-2 text-white">Aturan Anti Cinta</h3>
+                                <p class="text-gray-300 text-sm mb-4">Team T - Tonton Ulang</p>
+                                <button class="w-full py-3 bg-white/10 hover:bg-white/20 rounded-xl font-semibold transition-colors border border-white/20">
+                                    Tonton Replay
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </div>
+
+        <!-- MEMBERS PAGE -->
+        <div id="membersPage" class="page-section hidden">
+            <section class="py-12 px-4">
+                <div class="max-w-7xl mx-auto">
+                    <div class="text-center mb-12">
+                        <h2 class="font-orbitron text-5xl font-bold mb-4 gradient-text">MEMBER JKT48</h2>
+                        <p class="text-gray-400 text-lg">Kenali lebih dekat bintang-bintang theater kami</p>
+                    </div>
+
+                    <!-- Filter Tabs -->
+                    <div class="flex justify-center gap-4 mb-12 flex-wrap">
+                        <button onclick="filterMembers('all')" class="filter-btn active px-6 py-2 rounded-full bg-jkt-pink text-white font-semibold transition-all hover:scale-105" data-filter="all">Semua</button>
+                        <button onclick="filterMembers('team-j')" class="filter-btn px-6 py-2 rounded-full bg-white/10 text-gray-300 font-semibold transition-all hover:bg-jkt-pink hover:text-white hover:scale-105" data-filter="team-j">Team J</button>
+                        <button onclick="filterMembers('team-kiii')" class="filter-btn px-6 py-2 rounded-full bg-white/10 text-gray-300 font-semibold transition-all hover:bg-jkt-purple hover:text-white hover:scale-105" data-filter="team-kiii">Team KIII</button>
+                        <button onclick="filterMembers('team-t')" class="filter-btn px-6 py-2 rounded-full bg-white/10 text-gray-300 font-semibold transition-all hover:bg-jkt-cyan hover:text-black hover:scale-105" data-filter="team-t">Team T</button>
+                        <button onclick="filterMembers('trainee')" class="filter-btn px-6 py-2 rounded-full bg-white/10 text-gray-300 font-semibold transition-all hover:bg-yellow-500 hover:text-black hover:scale-105" data-filter="trainee">Trainee</button>
+                    </div>
+
+                    <!-- Members Grid -->
+                    <div id="membersGrid" class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6">
+                        <!-- Members will be populated by JavaScript -->
+                    </div>
+                </div>
+            </section>
+        </div>
+
+        <!-- SCHEDULE PAGE -->
+        <div id="schedulePage" class="page-section hidden">
+            <section class="py-12 px-4">
+                <div class="max-w-6xl mx-auto">
+                    <h2 class="font-orbitron text-5xl font-bold mb-12 text-center gradient-text">JADWAL THEATER</h2>
+                    
+                    <div class="glass-effect rounded-3xl p-8">
+                        <div class="flex items-center justify-between mb-8">
+                            <button class="text-2xl hover:text-jkt-pink transition-colors"><i class="fas fa-chevron-left"></i></button>
+                            <h3 class="text-2xl font-bold font-orbitron">Februari 2026</h3>
+                            <button class="text-2xl hover:text-jkt-pink transition-colors"><i class="fas fa-chevron-right"></i></button>
+                        </div>
+
+                        <div class="space-y-4" id="scheduleList">
+                            <!-- Schedule items populated by JS -->
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </div>
+
+        <!-- SHOP PAGE -->
+        <div id="shopPage" class="page-section hidden">
+            <section class="py-12 px-4">
+                <div class="max-w-7xl mx-auto">
+                    <h2 class="font-orbitron text-5xl font-bold mb-12 text-center gradient-text">MERCHANDISE</h2>
+                    
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                        <div class="glass-effect rounded-3xl p-6 text-center group hover:scale-105 transition-transform cursor-pointer">
+                            <div class="w-full h-64 bg-gradient-to-br from-jkt-pink/20 to-jkt-purple/20 rounded-2xl mb-4 flex items-center justify-center text-6xl group-hover:scale-110 transition-transform">
+                                <i class="fas fa-tshirt text-jkt-pink"></i>
+                            </div>
+                            <h3 class="text-xl font-bold mb-2">Official T-Shirt</h3>
+                            <p class="text-jkt-cyan font-bold text-2xl mb-4">Rp 350.000</p>
+                            <button class="w-full py-3 bg-jkt-pink rounded-xl font-semibold hover:bg-jkt-pink/80 transition-colors">Beli Sekarang</button>
+                        </div>
+
+                        <div class="glass-effect rounded-3xl p-6 text-center group hover:scale-105 transition-transform cursor-pointer">
+                            <div class="w-full h-64 bg-gradient-to-br from-jkt-purple/20 to-jkt-cyan/20 rounded-2xl mb-4 flex items-center justify-center text-6xl group-hover:scale-110 transition-transform">
+                                <i class="fas fa-images text-jkt-purple"></i>
+                            </div>
+                            <h3 class="text-xl font-bold mb-2">Photo Pack 2026</h3>
+                            <p class="text-jkt-cyan font-bold text-2xl mb-4">Rp 150.000</p>
+                            <button class="w-full py-3 bg-jkt-purple rounded-xl font-semibold hover:bg-jkt-purple/80 transition-colors">Beli Sekarang</button>
+                        </div>
+
+                        <div class="glass-effect rounded-3xl p-6 text-center group hover:scale-105 transition-transform cursor-pointer">
+                            <div class="w-full h-64 bg-gradient-to-br from-jkt-cyan/20 to-jkt-pink/20 rounded-2xl mb-4 flex items-center justify-center text-6xl group-hover:scale-110 transition-transform">
+                                <i class="fas fa-lightstick text-jkt-cyan"></i>
+                            </div>
+                            <h3 class="text-xl font-bold mb-2">Lightstick Official</h3>
+                            <p class="text-jkt-cyan font-bold text-2xl mb-4">Rp 450.000</p>
+                            <button class="w-full py-3 bg-jkt-cyan text-black rounded-xl font-semibold hover:bg-jkt-cyan/80 transition-colors">Beli Sekarang</button>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </div>
+
+    </main>
+
+    <!-- Login Modal -->
+    <div id="loginModal" class="fixed inset-0 z-[100] hidden">
+        <div class="absolute inset-0 bg-black/80 backdrop-blur-sm" onclick="closeLoginModal()"></div>
+        <div class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-full max-w-md p-6">
+            <div class="glass-effect rounded-3xl p-8 border border-white/20 shadow-2xl animate-slide-up">
+                <div class="flex justify-between items-center mb-6">
+                    <h3 class="text-2xl font-bold font-orbitron gradient-text">MASUK</h3>
+                    <button onclick="closeLoginModal()" class="text-gray-400 hover:text-white transition-colors">
+                        <i class="fas fa-times text-xl"></i>
+                    </button>
+                </div>
+
+                <form id="loginForm" onsubmit="handleLogin(event)" class="space-y-6">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-300 mb-2">Email / Username</label>
+                        <div class="relative">
+                            <i class="fas fa-user absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400"></i>
+                            <input type="text" id="loginUsername" required 
+                                class="w-full bg-black/30 border border-white/10 rounded-xl py-3 pl-12 pr-4 text-white focus:outline-none focus:border-jkt-pink focus:ring-1 focus:ring-jkt-pink transition-all"
+                                placeholder="Masukkan email atau username">
+                        </div>
+                    </div>
+
+                    <div>
+                        <label class="block text-sm font-medium text-gray-300 mb-2">Password</label>
+                        <div class="relative">
+                            <i class="fas fa-lock absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400"></i>
+                            <input type="password" id="loginPassword" required 
+                                class="w-full bg-black/30 border border-white/10 rounded-xl py-3 pl-12 pr-4 text-white focus:outline-none focus:border-jkt-pink focus:ring-1 focus:ring-jkt-pink transition-all"
+                                placeholder="Masukkan password">
+                        </div>
+                    </div>
+
+                    <div class="flex items-center justify-between text-sm">
+                        <label class="flex items-center text-gray-400 cursor-pointer hover:text-white">
+                            <input type="checkbox" class="mr-2 rounded bg-black/30 border-white/10 text-jkt-pink focus:ring-jkt-pink">
+                            Ingat saya
+                        </label>
+                        <a href="#" class="text-jkt-pink hover:text-jkt-cyan transition-colors">Lupa password?</a>
+                    </div>
+
+                    <button type="submit" 
+                        class="w-full py-4 bg-gradient-to-r from-jkt-pink to-jkt-purple rounded-xl font-bold text-lg hover:opacity-90 transition-all transform hover:scale-[1.02] shadow-lg shadow-jkt-pink/25">
+                        Masuk Sekarang
+                    </button>
+                </form>
+
+                <div class="mt-6 text-center">
+                    <p class="text-gray-400 text-sm">
+                        Belum punya akun? 
+                        <button onclick="switchToRegister()" class="text-jkt-cyan hover:underline font-semibold">Daftar sekarang</button>
+                    </p>
+                </div>
+
+                <div class="mt-6 pt-6 border-t border-white/10">
+                    <p class="text-center text-sm text-gray-500 mb-4">Atau masuk dengan</p>
+                    <div class="flex gap-4">
+                        <button class="flex-1 py-3 bg-white/5 border border-white/10 rounded-xl hover:bg-white/10 transition-colors flex items-center justify-center gap-2">
+                            <i class="fab fa-google text-red-500"></i> Google
+                        </button>
+                        <button class="flex-1 py-3 bg-white/5 border border-white/10 rounded-xl hover:bg-white/10 transition-colors flex items-center justify-center gap-2">
+                            <i class="fab fa-twitter text-blue-400"></i> Twitter
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Member Detail Modal -->
+    <div id="memberModal" class="fixed inset-0 z-[100] hidden">
+        <div class="absolute inset-0 bg-black/90 backdrop-blur-md" onclick="closeMemberModal()"></div>
+        <div class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-full max-w-2xl p-6">
+            <div class="glass-effect rounded-3xl overflow-hidden border border-white/20 shadow-2xl animate-slide-up" id="memberDetailContent">
+                <!-- Content populated by JS -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Theater Mode Overlay -->
+    <div id="theaterMode" class="fixed inset-0 z-[200] bg-black hidden">
+        <div class="relative w-full h-full flex">
+            <!-- Main Video Area -->
+            <div class="flex-1 flex flex-col">
+                <div class="flex items-center justify-between p-4 bg-black/50">
+                    <div class="flex items-center gap-4">
+                        <button onclick="exitTheater()" class="text-white hover:text-jkt-pink transition-colors">
+                            <i class="fas fa-arrow-left text-xl"></i>
+                        </button>
+                        <div>
+                            <h3 class="font-bold text-lg" id="theaterTitle">Pajama Drive - Team J</h3>
+                            <p class="text-sm text-gray-400">LIVE • 12,847 penonton</p>
+                        </div>
+                    </div>
+                    <div class="flex items-center gap-4">
+                        <button class="px-4 py-2 bg-jkt-pink rounded-lg font-semibold hover:bg-jkt-pink/80 transition-colors">
+                            <i class="fas fa-gift mr-2"></i> Dukung
+                        </button>
+                        <button class="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center hover:bg-white/20 transition-colors">
+                            <i class="fas fa-expand"></i>
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="flex-1 bg-gray-900 flex items-center justify-center relative overflow-hidden">
+                    <div class="absolute inset-0 bg-gradient-to-br from-jkt-pink/10 to-jkt-purple/10"></div>
+                    <div class="text-center z-10">
+                        <div class="w-24 h-24 mx-auto mb-4 rounded-full bg-jkt-pink/20 flex items-center justify-center animate-pulse">
+                            <i class="fas fa-play text-4xl text-jkt-pink"></i>
+                        </div>
+                        <p class="text-xl font-semibold">Stream Theater Sedang Dimuat...</p>
+                        <p class="text-gray-400 mt-2">Menghubungkan ke server JKT48 Theater</p>
+                    </div>
+                </div>
+
+                <!-- Controls -->
+                <div class="p-4 bg-black/50 border-t border-white/10">
+                    <div class="flex items-center justify-between">
+                        <div class="flex items-center gap-4">
+                            <button class="text-2xl hover:text-jkt-pink transition-colors"><i class="fas fa-play"></i></button>
+                            <div class="w-64 h-1 bg-white/20 rounded-full overflow-hidden">
+                                <div class="w-1/3 h-full bg-jkt-pink"></div>
+                            </div>
+                            <span class="text-sm text-gray-400">45:20 / 2:30:00</span>
+                        </div>
+                        <div class="flex items-center gap-4">
+                            <button class="hover:text-jkt-cyan transition-colors"><i class="fas fa-cog"></i></button>
+                            <button class="hover:text-jkt-cyan transition-colors"><i class="fas fa-volume-up"></i></button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Chat Sidebar -->
+            <div class="w-80 bg-jkt-dark border-l border-white/10 flex flex-col hidden lg:flex">
+                <div class="p-4 border-b border-white/10">
+                    <h4 class="font-bold">Live Chat</h4>
+                </div>
+                <div class="flex-1 overflow-y-auto p-4 space-y-3" id="chatMessages">
+                    <div class="text-sm">
+                        <span class="text-jkt-pink font-semibold">Fan123:</span>
+                        <span class="text-gray-300">Gokil sih performancenya! 🔥</span>
+                    </div>
+                    <div class="text-sm">
+                        <span class="text-jkt-cyan font-semibold">JKT48Lover:</span>
+                        <span class="text-gray-300">Semangat terus!! 💜</span>
+                    </div>
+                    <div class="text-sm">
+                        <span class="text-jkt-purple font-semibold">TheaterGoers:</span>
+                        <span class="text-gray-300">Kapan ke Surabaya lagi?</span>
+                    </div>
+                </div>
+                <div class="p-4 border-t border-white/10">
+                    <div class="flex gap-2">
+                        <input type="text" placeholder="Kirim pesan..." 
+                            class="flex-1 bg-white/5 border border-white/10 rounded-lg px-4 py-2 text-sm focus:outline-none focus:border-jkt-pink">
+                        <button class="px-4 py-2 bg-jkt-pink rounded-lg hover:bg-jkt-pink/80 transition-colors">
+                            <i class="fas fa-paper-plane"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Data Members JKT48
+        const members = [
+            { id: 1, name: "Adzana Shaliha", nickname: "Ashel", team: "team-j", generation: "Gen 9", image: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=400&h=400&fit=crop", bloodType: "O", height: "160cm", hobby: "Menari, Menyanyi" },
+            { id: 2, name: "Angelina Christy", nickname: "Christy", team: "team-j", generation: "Gen 7", image: "https://images.unsplash.com/photo-1517841905240-472988babdf9?w=400&h=400&fit=crop", bloodType: "A", height: "158cm", hobby: "Bermain game" },
+            { id: 3, name: "Azizi Asadel", nickname: "Zee", team: "team-j", generation: "Gen 7", image: "https://images.unsplash.com/photo-1524504388940-b1c1722653e1?w=400&h=400&fit=crop", bloodType: "B", height: "162cm", hobby: "Fotografi" },
+            { id: 4, name: "Cornelia Vanisa", nickname: "Oniel", team: "team-kiii", generation: "Gen 8", image: "https://images.unsplash.com/photo-1488426862026-3ee34a7d66df?w=400&h=400&fit=crop", bloodType: "O", height: "165cm", hobby: "Membaca" },
+            { id: 5, name: "Febriola Sinambela", nickname: "Olla", team: "team-kiii", generation: "Gen 8", image: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400&h=400&fit=crop", bloodType: "A", height: "163cm", hobby: "Menulis" },
+            { id: 6, name: "Feni Fitriyanti", nickname: "Feni", team: "team-t", generation: "Gen 3", image: "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=400&h=400&fit=crop", bloodType: "B", height: "159cm", hobby: "Bermain musik" },
+            { id: 7, name: "Fiony Alveria", nickname: "Fiony", team: "team-t", generation: "Gen 8", image: "https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=400&h=400&fit=crop", bloodType: "O", height: "161cm", hobby: "Menggambar" },
+            { id: 8, name: "Flora Shafiq", nickname: "Flora", team: "team-t", generation: "Gen 8", image: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=400&h=400&fit=crop", bloodType: "A", height: "164cm", hobby: "Bersepeda" },
+            { id: 9, name: "Fransisca Saraswati", nickname: "Sisca", team: "team-kiii", generation: "Gen 7", image: "https://images.unsplash.com/photo-1531746020798-e6953c6e8e04?w=400&h=400&fit=crop", bloodType: "B", height: "160cm", hobby: "Bermain piano" },
+            { id: 10, name: "Freya Jayawardana", nickname: "Freya", team: "team-j", generation: "Gen 7", image: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=400&h=400&fit=crop", bloodType: "AB", height: "158cm", hobby: "Menonton anime" },
+            { id: 11, name: "Gabriela Abigail", nickname: "Ella", team: "trainee", generation: "Gen 10", image: "https://images.unsplash.com/photo-1487412720507-e7ab37603c6f?w=400&h=400&fit=crop", bloodType: "O", height: "162cm", hobby: "Bernyanyi" },
+            { id: 12, name: "Gita Sekar Andarini", nickname: "Gita", team: "team-kiii", generation: "Gen 6", image: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=400&h=400&fit=crop", bloodType: "A", height: "166cm", hobby: "Memasak" },
+        ];
+
+        // Schedule Data
+        const schedules = [
+            { date: "15 Feb", time: "19:00", title: "Pajama Drive", team: "Team J", status: "live", color: "red" },
+            { date: "15 Feb", time: "20:30", title: "Cara Meminum Ramune", team: "Team KIII", status: "upcoming", color: "purple" },
+            { date: "16 Feb", time: "14:00", title: "Aturan Anti Cinta", team: "Team T", status: "scheduled", color: "cyan" },
+            { date: "16 Feb", time: "19:00", title: "Saka Agari", team: "Team J", status: "scheduled", color: "pink" },
+            { date: "17 Feb", time: "19:00", title: "Seifuku no Me", team: "Team KIII", status: "scheduled", color: "purple" },
+        ];
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', () => {
+            createParticles();
+            renderMembers('all');
+            renderSchedule();
+            updateViewerCount();
+            
+            // Simulate live viewer count
+            setInterval(updateViewerCount, 5000);
+        });
+
+        // Particle System
+        function createParticles() {
+            const container = document.getElementById('particles');
+            for (let i = 0; i < 50; i++) {
+                const particle = document.createElement('div');
+                particle.className = 'particle';
+                particle.style.left = Math.random() * 100 + '%';
+                particle.style.width = Math.random() * 4 + 2 + 'px';
+                particle.style.height = particle.style.width;
+                particle.style.animationDuration = Math.random() * 10 + 10 + 's';
+                particle.style.animationDelay = Math.random() * 5 + 's';
+                container.appendChild(particle);
+            }
+        }
+
+        // Navigation
+        function showPage(pageName) {
+            // Hide all pages
+            document.querySelectorAll('.page-section').forEach(page => {
+                page.classList.add('hidden');
+            });
+            
+            // Show selected page
+            document.getElementById(pageName + 'Page').classList.remove('hidden');
+            
+            // Scroll to top
+            window.scrollTo(0, 0);
+            
+            // Update active nav state
+            document.querySelectorAll('.nav-link').forEach(link => {
+                link.classList.remove('text-white');
+                link.classList.add('text-gray-300');
+            });
+            event.target.classList.remove('text-gray-300');
+            event.target.classList.add('text-white');
+        }
+
+        // Member Functions
+        function renderMembers(filter) {
+            const grid = document.getElementById('membersGrid');
+            grid.innerHTML = '';
+            
+            const filtered = filter === 'all' ? members : members.filter(m => m.team === filter);
+            
+            filtered.forEach((member, index) => {
+                const card = document.createElement('div');
+                card.className = 'member-card glass-effect rounded-2xl overflow-hidden cursor-pointer group animate-slide-up';
+                card.style.animationDelay = index * 0.05 + 's';
+                card.onclick = () => showMemberDetail(member);
+                
+                const teamColors = {
+                    'team-j': 'from-pink-500 to-rose-500',
+                    'team-kiii': 'from-purple-500 to-indigo-500',
+                    'team-t': 'from-cyan-500 to-blue-500',
+                    'trainee': 'from-yellow-500 to-orange-500'
+                };
+                
+                card.innerHTML = `
+                    <div class="relative overflow-hidden">
+                        <img src="${member.image}" alt="${member.name}" class="w-full h-48 object-cover transform group-hover:scale-110 transition-transform duration-500">
+                        <div class="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></div>
+                        <div class="absolute top-2 right-2">
+                            <span class="px-2 py-1 bg-black/50 backdrop-blur rounded text-xs font-bold border border-white/20">${member.generation}</span>
+                        </div>
+                    </div>
+                    <div class="p-4">
+                        <h3 class="font-bold text-lg mb-1 group-hover:text-jkt-pink transition-colors">${member.nickname}</h3>
+                        <p class="text-sm text-gray-400 mb-3">${member.name}</p>
+                        <div class="flex items-center justify-between">
+                            <span class="text-xs px-3 py-1 rounded-full bg-gradient-to-r ${teamColors[member.team]} text-white font-semibold">
+                                ${member.team.replace('team-', 'Team ').replace('kiii', 'KIII').toUpperCase()}
+                            </span>
+                            <i class="fas fa-chevron-right text-gray-500 group-hover:text-jkt-pink transition-colors"></i>
+                        </div>
+                    </div>
+                `;
+                grid.appendChild(card);
+            });
+        }
+
+        function filterMembers(team) {
+            // Update buttons
+            document.querySelectorAll('.filter-btn').forEach(btn => {
+                btn.classList.remove('bg-jkt-pink', 'bg-jkt-purple', 'bg-jkt-cyan', 'bg-yellow-500', 'text-white', 'text-black');
+                btn.classList.add('bg-white/10', 'text-gray-300');
+            });
+            
+            event.target.classList.remove('bg-white/10', 'text-gray-300');
+            
+            const colors = {
+                'all': 'bg-jkt-pink',
+                'team-j': 'bg-jkt-pink',
+                'team-kiii': 'bg-jkt-purple',
+                'team-t': 'bg-jkt-cyan text-black',
+                'trainee': 'bg-yellow-500 text-black'
+            };
+            
+            event.target.classList.add(colors[team].split(' ')[0]);
+            if (colors[team].includes('text-black')) event.target.classList.add('text-black');
+            else event.target.classList.add('text-white');
+            
+            renderMembers(team);
+        }
+
+        function showMemberDetail(member) {
+            const modal = document.getElementById('memberModal');
+            const content = document.getElementById('memberDetailContent');
+            
+            content.innerHTML = `
+                <div class="relative">
+                    <button onclick="closeMemberModal()" class="absolute top-4 right-4 z-10 w-10 h-10 bg-black/50 rounded-full flex items-center justify-center hover:bg-black/70 transition-colors">
+                        <i class="fas fa-times"></i>
+                    </button>
+                    <div class="flex flex-col md:flex-row">
+                        <div class="md:w-1/2 h-64 md:h-auto">
+                            <img src="${member.image}" alt="${member.name}" class="w-full h-full object-cover">
+                        </div>
+                        <div class="md:w-1/2 p-8">
+                            <div class="mb-4">
+                                <span class="text-jkt-pink font-bold text-sm tracking-wider">${member.generation}</span>
+                                <h2 class="text-3xl font-bold font-orbitron mt-1">${member.nickname}</h2>
+                                <p class="text-gray-400">${member.name}</p>
+                            </div>
+                            
+                            <div class="space-y-4 mb-6">
+                                <div class="flex items-center gap-3">
+                                    <div class="w-10 h-10 rounded-full bg-white/5 flex items-center justify-center">
+                                        <i class="fas fa-users text-jkt-cyan"></i>
+                                    </div>
+                                    <div>
+                                        <p class="text-xs text-gray-500">Team</p>
+                                        <p class="font-semibold">${member.team.replace('team-', 'Team ').replace('kiii', 'KIII').toUpperCase()}</p>
+                                    </div>
+                                </div>
+                                <div class="flex items-center gap-3">
+                                    <div class="w-10 h-10 rounded-full bg-white/5 flex items-center justify-center">
+                                        <i class="fas fa-tint text-red-500"></i>
+                                    </div>
+                                    <div>
+                                        <p class="text-xs text-gray-500">Golongan Darah</p>
+                                        <p class="font-semibold">${member.bloodType}</p>
+                                    </div>
+                                </div>
+                                <div class="flex items-center gap-3">
+                                    <div class="w-10 h-10 rounded-full bg-white/5 flex items-center justify-center">
+                                        <i class="fas fa-ruler-vertical text-jkt-purple"></i>
+                                    </div>
+                                    <div>
+                                        <p class="text-xs text-gray-500">Tinggi</p>
+                                        <p class="font-semibold">${member.height}</p>
+                                    </div>
+                                </div>
+                                <div class="flex items-center gap-3">
+                                    <div class="w-10 h-10 rounded-full bg-white/5 flex items-center justify-center">
+                                        <i class="fas fa-heart text-jkt-pink"></i>
+                                    </div>
+                                    <div>
+                                        <p class="text-xs text-gray-500">Hobi</p>
+                                        <p class="font-semibold">${member.hobby}</p>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <button class="w-full py-3 bg-gradient-to-r from-jkt-pink to-jkt-purple rounded-xl font-bold hover:opacity-90 transition-opacity">
+                                <i class="fas fa-star mr-2"></i> Jadi Oshi
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            `;
+            
+            modal.classList.remove('hidden');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeMemberModal() {
+            document.getElementById('memberModal').classList.add('hidden');
+            document.body.style.overflow = 'auto';
+        }
+
+        // Schedule Functions
+        function renderSchedule() {
+            const container = document.getElementById('scheduleList');
+            
+            schedules.forEach((item, index) => {
+                const div = document.createElement('div');
+                div.className = 'glass-effect rounded-2xl p-6 flex items-center gap-6 hover:bg-white/5 transition-colors group cursor-pointer';
+                
+                const statusColors = {
+                    'live': 'bg-red-500 animate-pulse',
+                    'upcoming': 'bg-jkt-purple',
+                    'scheduled': 'bg-white/20'
+                };
+                
+                div.innerHTML = `
+                    <div class="flex-shrink-0 text-center w-20">
+                        <div class="text-2xl font-bold font-orbitron text-white">${item.date.split(' ')[0]}</div>
+                        <div class="text-sm text-gray-400">${item.date.split(' ')[1] || 'Feb'}</div>
+                    </div>
+                    <div class="flex-shrink-0 w-px h-12 bg-white/10"></div>
+                    <div class="flex-1">
+                        <h4 class="text-xl font-bold mb-1 group-hover:text-jkt-pink transition-colors">${item.title}</h4>
+                        <p class="text-gray-400 text-sm">${item.team} • ${item.time} WIB</p>
+                    </div>
+                    <div class="flex items-center gap-3">
+                        <span class="w-3 h-3 rounded-full ${statusColors[item.status]}"></span>
+                        <span class="text-sm font-semibold capitalize ${item.status === 'live' ? 'text-red-400' : 'text-gray-400'}">${item.status === 'live' ? 'LIVE' : item.status === 'upcoming' ? 'SEGERA' : 'TERJADWAL'}</span>
+                    </div>
+                    <button class="px-6 py-2 rounded-full border border-white/20 hover:bg-white/10 transition-colors text-sm font-semibold">
+                        ${item.status === 'live' ? 'Tonton' : 'Reminder'}
+                    </button>
+                `;
+                container.appendChild(div);
+            });
+        }
+
+        // Login Functions
+        function openLoginModal() {
+            document.getElementById('loginModal').classList.remove('hidden');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeLoginModal() {
+            document.getElementById('loginModal').classList.add('hidden');
+            document.body.style.overflow = 'auto';
+        }
+
+        function handleLogin(e) {
+            e.preventDefault();
+            const username = document.getElementById('loginUsername').value;
+            
+            // Simulate login
+            closeLoginModal();
+            
+            // Update UI to show logged in state
+            const authSection = document.getElementById('authSection');
+            authSection.innerHTML = `
+                <div class="flex items-center gap-4">
+                    <button class="relative p-2 text-gray-300 hover:text-white transition-colors">
+                        <i class="fas fa-bell text-xl"></i>
+                        <span class="absolute top-0 right-0 w-2 h-2 bg-jkt-pink rounded-full"></span>
+                    </button>
+                    <div class="flex items-center gap-3 pl-4 border-l border-white/10">
+                        <div class="text-right hidden sm:block">
+                            <div class="text-sm font-semibold">${username}</div>
+                            <div class="text-xs text-jkt-pink">Fan Premium</div>
+                        </div>
+                        <div class="w-10 h-10 rounded-full bg-gradient-to-br from-jkt-pink to-jkt-purple flex items-center justify-center font-bold">
+                            ${username.charAt(0).toUpperCase()}
+                        </div>
+                    </div>
+                </div>
+            `;
+            
+            // Show notification
+            showNotification('Berhasil masuk! Selamat datang kembali, ' + username);
+        }
+
+        function switchToRegister() {
+            showNotification('Fitur pendaftaran akan segera hadir!');
+        }
+
+        // Theater Mode
+        function enterTheater() {
+            document.getElementById('theaterMode').classList.remove('hidden');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function exitTheater() {
+            document.getElementById('theaterMode').classList.add('hidden');
+            document.body.style.overflow = 'auto';
+        }
+
+        function watchShow(showId) {
+            enterTheater();
+            document.getElementById('theaterTitle').textContent = 'Pajama Drive - Team J (Live)';
+        }
+
+        // Utilities
+        function updateViewerCount() {
+            const base = 12847;
+            const variance = Math.floor(Math.random() * 100) - 50;
+            document.getElementById('viewerCount').textContent = (base + variance).toLocaleString();
+        }
+
+        function showNotification(message) {
+            const notif = document.createElement('div');
+            notif.className = 'fixed bottom-8 right-8 bg-jkt-pink text-white px-6 py-4 rounded-xl shadow-2xl z-[300] animate-slide-up font-semibold';
+            notif.innerHTML = `<i class="fas fa-check-circle mr-2"></i> ${message}`;
+            document.body.appendChild(notif);
+            
+            setTimeout(() => {
+                notif.remove();
+            }, 3000);
+        }
+
+        // Keyboard shortcuts
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') {
+                closeLoginModal();
+                closeMemberModal();
+                exitTheater();
+            }
+        });
+    </script>
+</body>
+</html>
